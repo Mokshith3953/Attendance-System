@@ -2,7 +2,7 @@ import { API_URL } from '../utils/config';
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate, Link } from 'react-router-dom';
-await axios.post(`${API_URL}/api/auth/register`, formData);
+
 const Register = () => {
   const [formData, setFormData] = useState({
     name: '',
@@ -21,9 +21,9 @@ const Register = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      // Register via Backend API
-      const { data } = await axios.post('http://localhost:5000/api/auth/register', formData);
-      
+      // Use API_URL for production instead of localhost
+      const { data } = await axios.post(`${API_URL}/api/auth/register`, formData);
+
       // Save token and redirect
       localStorage.setItem('token', data.token);
       localStorage.setItem('user', JSON.stringify(data));
@@ -38,7 +38,7 @@ const Register = () => {
       <div className="bg-white p-8 rounded shadow-md w-96">
         <h2 className="text-2xl font-bold mb-6 text-center">Register Employee</h2>
         {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
-        
+
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
             <input type="text" name="name" placeholder="Full Name" onChange={handleChange} className="w-full p-2 border rounded" required />
@@ -55,7 +55,7 @@ const Register = () => {
           <div className="mb-6">
             <input type="text" name="department" placeholder="Department" onChange={handleChange} className="w-full p-2 border rounded" required />
           </div>
-          
+
           <button type="submit" className="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600 transition">Register</button>
         </form>
         <p className="mt-4 text-center text-sm">
