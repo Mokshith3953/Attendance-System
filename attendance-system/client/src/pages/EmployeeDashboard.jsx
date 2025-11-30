@@ -1,8 +1,11 @@
+import { API_URL } from '../utils/config';
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { LogIn, LogOut, Clock, Calendar, Briefcase, CheckCircle, AlertCircle, Timer } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
+
+
 
 const EmployeeDashboard = () => {
   const [attendance, setAttendance] = useState(null);
@@ -21,7 +24,7 @@ const EmployeeDashboard = () => {
     try {
       const token = localStorage.getItem('token');
       const config = { headers: { Authorization: `Bearer ${token}` } };
-      const todayRes = await axios.get('http://localhost:5000/api/attendance/today', config);
+      const todayRes = await axios.get(`${API_URL}/api/attendance/today`, config);
       setAttendance(todayRes.data);
       setLoading(false);
     } catch (error) {
@@ -34,9 +37,9 @@ const EmployeeDashboard = () => {
       const token = localStorage.getItem('token');
       const config = { headers: { Authorization: `Bearer ${token}` } };
       if (!attendance) {
-        await axios.post('http://localhost:5000/api/attendance/checkin', {}, config);
+        await axios.post(`${API_URL}/api/attendance/checkin`, {}, config);
       } else if (!attendance.checkOutTime) {
-        await axios.post('http://localhost:5000/api/attendance/checkout', {}, config);
+        await axios.post(`${API_URL}/api/attendance/checkout`, {}, config);
       }
       fetchDashboardData();
     } catch (error) {

@@ -1,7 +1,8 @@
+import { API_URL } from '../utils/config';
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate, Link } from 'react-router-dom';
-
+await axios.post(`${API_URL}/api/auth/register`, formData);
 const Register = () => {
   const [formData, setFormData] = useState({
     name: '',

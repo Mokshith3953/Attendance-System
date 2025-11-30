@@ -1,10 +1,18 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import { Users, LogOut, FileDown } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
-import { 
-  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer 
-} from 'recharts';
+import { API_URL } from "../utils/config";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import { Users, LogOut, FileDown } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  ResponsiveContainer,
+} from "recharts";
 
 const ManagerDashboard = () => {
   const [employees, setEmployees] = useState([]);
@@ -17,37 +25,42 @@ const ManagerDashboard = () => {
 
   const fetchEmployeeData = async () => {
     try {
-      const token = localStorage.getItem('token');
+      const token = localStorage.getItem("token");
       const config = { headers: { Authorization: `Bearer ${token}` } };
-      
+
       // 1. Fetch Employee List (Table Data)
-      const employeeRes = await axios.get('http://localhost:5000/api/manager/all', config);
+      const employeeRes = await axios.get(`${API_URL}/api/manager/all`, config);
       setEmployees(employeeRes.data);
 
       // 2. Fetch Real Chart Stats (Graph Data)
-      const statsRes = await axios.get('http://localhost:5000/api/manager/stats', config);
+      const statsRes = await axios.get(`${API_URL}/api/manager/stats`, config);
       setChartData(statsRes.data);
-
     } catch (error) {
       console.error("Error fetching data", error);
     }
   };
 
   const handleLogout = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
-    navigate('/');
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    navigate("/");
   };
 
   const downloadCSV = () => {
-    const headers = ["Employee Name, Department, Status, Check In Time, Check Out Time"];
-    const rows = employees.map(emp => {
-      const checkIn = emp.checkInTime ? new Date(emp.checkInTime).toLocaleTimeString() : '-';
-      const checkOut = emp.checkOutTime ? new Date(emp.checkOutTime).toLocaleTimeString() : '-';
+    const headers = [
+      "Employee Name, Department, Status, Check In Time, Check Out Time",
+    ];
+    const rows = employees.map((emp) => {
+      const checkIn = emp.checkInTime
+        ? new Date(emp.checkInTime).toLocaleTimeString()
+        : "-";
+      const checkOut = emp.checkOutTime
+        ? new Date(emp.checkOutTime).toLocaleTimeString()
+        : "-";
       return `${emp.name},${emp.department},${emp.status},${checkIn},${checkOut}`;
     });
     const csvContent = [headers, ...rows].join("\n");
-    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
     link.href = url;
@@ -62,15 +75,21 @@ const ManagerDashboard = () => {
       {/* Header */}
       <div className="flex justify-between items-center mb-8 bg-white p-4 rounded shadow">
         <h1 className="text-2xl font-bold flex items-center gap-2">
-           <Users className="text-blue-600" /> Manager Dashboard
+          <Users className="text-blue-600" /> Manager Dashboard
         </h1>
         <div className="flex gap-4">
-            <button onClick={downloadCSV} className="flex items-center gap-2 bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition">
-                <FileDown size={20} /> Export CSV
-            </button>
-            <button onClick={handleLogout} className="flex items-center gap-2 text-red-500 hover:text-red-700 font-medium">
-                <LogOut size={20} /> Logout
-            </button>
+          <button
+            onClick={downloadCSV}
+            className="flex items-center gap-2 bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition"
+          >
+            <FileDown size={20} /> Export CSV
+          </button>
+          <button
+            onClick={handleLogout}
+            className="flex items-center gap-2 text-red-500 hover:text-red-700 font-medium"
+          >
+            <LogOut size={20} /> Logout
+          </button>
         </div>
       </div>
 
@@ -78,9 +97,11 @@ const ManagerDashboard = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
         {/* Weekly Trend Bar Chart */}
         <div className="bg-white p-6 rounded shadow">
-          <h3 className="text-lg font-semibold mb-4">Weekly Attendance Trend</h3>
+          <h3 className="text-lg font-semibold mb-4">
+            Weekly Attendance Trend
+          </h3>
           {/* Ensure container has height so chart renders */}
-          <div style={{ width: '100%', height: 300 }}>
+          <div style={{ width: "100%", height: 300 }}>
             <ResponsiveContainer>
               <BarChart data={chartData}>
                 <CartesianGrid strokeDasharray="3 3" />
@@ -97,25 +118,29 @@ const ManagerDashboard = () => {
 
         {/* Department Stats Table */}
         <div className="bg-white p-6 rounded shadow">
-           <h3 className="text-lg font-semibold mb-4">Department Overview</h3>
-           <div className="overflow-y-auto h-64">
-             <table className="w-full text-left">
-               <thead className="bg-gray-50">
-                 <tr>
-                   <th className="p-2">Department</th>
-                   <th className="p-2">Employees</th>
-                 </tr>
-               </thead>
-               <tbody>
-                 {[...new Set(employees.map(item => item.department))].map((dept, index) => (
-                   <tr key={index} className="border-b">
-                     <td className="p-2 font-medium">{dept || "General"}</td>
-                     <td className="p-2">{employees.filter(e => e.department === dept).length}</td>
-                   </tr>
-                 ))}
-               </tbody>
-             </table>
-           </div>
+          <h3 className="text-lg font-semibold mb-4">Department Overview</h3>
+          <div className="overflow-y-auto h-64">
+            <table className="w-full text-left">
+              <thead className="bg-gray-50">
+                <tr>
+                  <th className="p-2">Department</th>
+                  <th className="p-2">Employees</th>
+                </tr>
+              </thead>
+              <tbody>
+                {[...new Set(employees.map((item) => item.department))].map(
+                  (dept, index) => (
+                    <tr key={index} className="border-b">
+                      <td className="p-2 font-medium">{dept || "General"}</td>
+                      <td className="p-2">
+                        {employees.filter((e) => e.department === dept).length}
+                      </td>
+                    </tr>
+                  )
+                )}
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
 
@@ -139,15 +164,23 @@ const ManagerDashboard = () => {
                 <td className="p-4 border-b font-medium">{emp.name}</td>
                 <td className="p-4 border-b text-gray-500">{emp.department}</td>
                 <td className="p-4 border-b">
-                  <span className={`px-3 py-1 rounded-full text-xs font-bold uppercase
-                    ${emp.status === 'present' ? 'bg-green-100 text-green-700' : 
-                      emp.status === 'absent' ? 'bg-red-100 text-red-700' : 
-                      'bg-yellow-100 text-yellow-700'}`}>
+                  <span
+                    className={`px-3 py-1 rounded-full text-xs font-bold uppercase
+                    ${
+                      emp.status === "present"
+                        ? "bg-green-100 text-green-700"
+                        : emp.status === "absent"
+                        ? "bg-red-100 text-red-700"
+                        : "bg-yellow-100 text-yellow-700"
+                    }`}
+                  >
                     {emp.status}
                   </span>
                 </td>
                 <td className="p-4 border-b text-gray-600">
-                  {emp.checkInTime ? new Date(emp.checkInTime).toLocaleTimeString() : '-'}
+                  {emp.checkInTime
+                    ? new Date(emp.checkInTime).toLocaleTimeString()
+                    : "-"}
                 </td>
               </tr>
             ))}
