@@ -1,9 +1,9 @@
-import { API_URL } from "../utils/config";
 import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate, Link } from "react-router-dom";
 import { Lock, Mail, ArrowRight, Activity } from "lucide-react";
 import { motion } from "framer-motion";
+import { API_URL } from "../utils/config";
 
 const Login = () => {
   const [formData, setFormData] = useState({ email: "", password: "" });
@@ -19,10 +19,7 @@ const Login = () => {
     e.preventDefault();
     setLoading(true);
     try {
-      const { data } = await await axios.post(
-        `${API_URL}/api/auth/login`,
-        formData
-      );
+      const { data } = await axios.post(`${API_URL}/api/auth/login`, formData);
       localStorage.setItem("token", data.token);
       localStorage.setItem("user", JSON.stringify(data));
       navigate(
@@ -56,14 +53,9 @@ const Login = () => {
         className="relative z-10 w-full max-w-md bg-white/10 backdrop-blur-xl border border-white/20 p-8 rounded-3xl shadow-2xl"
       >
         <div className="text-center mb-8">
-          <motion.div
-            initial={{ scale: 0 }}
-            animate={{ scale: 1 }}
-            transition={{ type: "spring", stiffness: 200, delay: 0.2 }}
-            className="w-16 h-16 bg-gradient-to-tr from-blue-500 to-purple-500 rounded-2xl mx-auto flex items-center justify-center shadow-lg mb-4"
-          >
+          <div className="w-16 h-16 bg-gradient-to-tr from-blue-500 to-purple-500 rounded-2xl mx-auto flex items-center justify-center shadow-lg mb-4">
             <Activity className="text-white" size={32} />
-          </motion.div>
+          </div>
           <h2 className="text-3xl font-bold text-white tracking-tight">
             Welcome Back
           </h2>
@@ -73,13 +65,9 @@ const Login = () => {
         </div>
 
         {error && (
-          <motion.div
-            initial={{ x: -10, opacity: 0 }}
-            animate={{ x: 0, opacity: 1 }}
-            className="bg-red-500/20 border border-red-500/50 text-red-200 p-3 rounded-lg mb-6 text-sm text-center"
-          >
+          <div className="bg-red-500/20 border border-red-500/50 text-red-200 p-3 rounded-lg mb-6 text-sm text-center">
             {error}
-          </motion.div>
+          </div>
         )}
 
         <form onSubmit={handleSubmit} className="space-y-5">
