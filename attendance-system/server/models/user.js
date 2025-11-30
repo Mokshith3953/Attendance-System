@@ -13,3 +13,6 @@ const userSchema = new mongoose.Schema(
 ); // Automatically adds createdAt
 
 module.exports = mongoose.model("User", userSchema);
+//Updated file name
+
+
